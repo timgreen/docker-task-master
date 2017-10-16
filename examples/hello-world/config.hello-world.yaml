@@ -8,8 +8,16 @@ services:
     enabled: true
     one-off: true
     entry-point: echo hello world
+    run-after:
+      - wait-1-min
+      - docker-hello-world
 
   docker-hello-world:
     enabled: true
     one-off: true
     entry-point: docker run hello-world
+
+  wait-1-min:
+    enabled: true
+    one-off: true
+    entry-point: sleep 1m
