@@ -1,0 +1,15 @@
+config:
+  papertrail:
+    # host: logs?.papertrailapp.com
+    # port: <port>
+
+services:
+  hello-world:
+    enabled: true
+    one-off: true
+    entry-point: echo hello world
+
+  docker-hello-world:
+    enabled: true
+    one-off: true
+    entry-point: docker run hello-world
