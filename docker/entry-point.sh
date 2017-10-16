@@ -81,6 +81,14 @@ log_file_for_self() {
   echo "$WORKDIR/master.log"
 }
 
+tsort_file() {
+  echo "$WORKDIR/tsort_result"
+}
+
+tsort_error_file() {
+  echo "$WORKDIR/tsort_error"
+}
+
 try_to_execute() {
   i=$1
   serviceName="$2"
@@ -233,6 +241,22 @@ verify_config() {
       fi
     done
   done
+
+  # Ensure no circular dependency.
+  {
+    for serviceName in $(list_service_names); do
+      for dependency in $(yq_service $serviceName '."run-after"?[]?'); do
+        echo "$dependency $serviceName"
+      done
+    done
+  } | tsort > $(tsort_file) 2> $(tsort_error_file) || {
+    echo "$(tput setaf 1)Error$(tput sgr0): found circular dependency."
+    tail +2 $(tsort_error_file) | cut -d: -f 2
+    echo
+    print_service_graph
+
+    exit 1
+  }
 }
 
 # Commands
