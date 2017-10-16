@@ -24,6 +24,11 @@ list_enabled_service_names() {
   done
 }
 
+has_service() {
+  name=$1
+  [[ "$(yq_service $name .enabled)" != "null" ]]
+}
+
 is_service_enabled() {
   name=$1
   [[ "$(yq_service $name .enabled | tr 'A-Z' 'a-z')" == "true" ]]
@@ -207,12 +212,24 @@ wait_until_tmux_quit() {
 }
 
 verify_config() {
-  # Ensure dependencies type is one-off
+  # Check dependencies
   for serviceName in $(list_service_names); do
     for dependency in $(yq_service $serviceName '."run-after"?[]?'); do
+      # Ensure dependency service exists.
+      if ! has_service $dependency; then
+        echo "$(tput setaf 1)Error$(tput sgr0): service '$(tput setaf 3)$serviceName$(tput sgr0)' depends non-exist service '$(tput setaf 3)$dependency$(tput sgr0)', please fix."
+      fi
+      # Ensure dependency service type is one-off.
       if ! is_service_one_off $dependency; then
         echo "$(tput setaf 1)Error$(tput sgr0): service '$(tput setaf 3)$serviceName$(tput sgr0)' depends on non one-off service '$(tput setaf 3)$dependency$(tput sgr0)', please fix."
         exit 1
+      fi
+      # Ensure enabled service dependency could be resolved.
+      if is_service_enabled $serviceName; then
+        if ! is_service_enabled $dependency; then
+          echo "$(tput setaf 1)Error$(tput sgr0): enabled service '$(tput setaf 3)$serviceName$(tput sgr0)' depends on disabled service '$(tput setaf 3)$dependency$(tput sgr0)', please fix."
+          exit 1
+        fi
       fi
     done
   done
