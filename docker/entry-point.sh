@@ -156,12 +156,21 @@ has_papertrail() {
   which remote_syslog > /dev/null
 }
 
+has_papertrail_config() {
+  [[ $(yq '.config.papertrail.host') != 'null' ]] \
+    && [[ $(yq '.config.papertrail.port') != 'null' ]]
+}
+
+should_enable_papertrail() {
+  has_papertrail && has_papertrail_config
+}
+
 has_graph_easy() {
   which graph-easy > /dev/null
 }
 
 setup_papertrail() {
-  has_papertrail || return
+  should_enable_papertrail || return
   echo "Setup Papertrail"
   cat << EOF > /etc/log_files.yml
 destination:
@@ -181,7 +190,7 @@ start_control_tmux() {
 
   # monitor
   tmux rename-window -t $TMUX_SESSION:1 monitor
-  if has_papertrail; then
+  if should_enable_papertrail; then
     tmux split-window -h -t $TMUX_SESSION:1.1
     ## papertrail
     tmux send-keys -t $TMUX_SESSION:1.2 -l 'remote_syslog -D'
