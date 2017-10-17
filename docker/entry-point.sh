@@ -60,11 +60,11 @@ fire_service_in_tmux_tab() {
   targetWindow="$TMUX_SESSION:$((i+1))"
   tmux new-window -t $targetWindow -n "$serviceName" -c "$WORKDIR/$serviceName"
   # Wait service dependencies.
-  tmux send-keys -t $targetWindow -l "/status-manager.sh wait $(yq_service $serviceName '."run-after"?[]?');"
+  tmux send-keys -t $targetWindow -l "/status-manager.sh wait $(yq_service $serviceName '."run-after"?[]?'); "
   # Run entry point code.
-  tmux send-keys -t $targetWindow -l "$entryPoint"
+  tmux send-keys -t $targetWindow -l "$entryPoint "
   # Notify other service if this task completed without error.
-  tmux send-keys -t $targetWindow -l " && /status-manager.sh resolve $serviceName"
+  tmux send-keys -t $targetWindow -l "&& /status-manager.sh resolve $serviceName "
   tmux pipe-pane -t $targetWindow "cat >> '$(log_file_for $serviceName)'"
   tmux send-keys -t $targetWindow enter
 }
