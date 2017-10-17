@@ -6,13 +6,13 @@ RUN apk add --no-cache \
     coreutils \
     git \
     openssh-client \
-    gnupg \
     curl \
     jq \
     python \
     py-pip \
     tmux \
     ncurses \
+    inotify-tools \
   && pip install yq
 
 # papertrail
