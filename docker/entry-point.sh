@@ -39,7 +39,7 @@ is_service_one_off() {
   [[ "$(yq_service $name '."one-off"' | tr 'A-Z' 'a-z')" == "true" ]]
 }
 
-execute_service_in_tmux() {
+fire_service_in_tmux_tab() {
   i=$1
   serviceName=$2
 
@@ -57,19 +57,16 @@ execute_service_in_tmux() {
   fi
 
   # run entry point in tmux
-  waitForKey="$serviceName:$RANDOM"
   targetWindow="$TMUX_SESSION:$((i+1))"
   tmux new-window -t $targetWindow -n "$serviceName" -c "$WORKDIR/$serviceName"
+  # Wait service dependencies.
+  tmux send-keys -t $targetWindow -l "/status-manager.sh wait $(yq_service $serviceName '."run-after"?[]?');"
+  # Run entry point code.
   tmux send-keys -t $targetWindow -l "$entryPoint"
-  is_service_one_off $serviceName && \
-    tmux send-keys -t $targetWindow -l "; tmux wait-for -S '$waitForKey'"
+  # Notify other service if this task completed without error.
+  tmux send-keys -t $targetWindow -l " && /status-manager.sh resolve $serviceName"
   tmux pipe-pane -t $targetWindow "cat >> '$(log_file_for $serviceName)'"
   tmux send-keys -t $targetWindow enter
-
-  # wait one-off service to finish
-  # TODO: better way to resolve the dependencies via wait-for -L -U
-  is_service_one_off $serviceName && \
-    tmux wait-for "$waitForKey"
 }
 
 log_file_for() {
@@ -87,21 +84,6 @@ tsort_file() {
 
 tsort_error_file() {
   echo "$WORKDIR/tsort_error"
-}
-
-try_to_execute() {
-  i=$1
-  serviceName="$2"
-  # https://stackoverflow.com/questions/4069188/how-to-pass-an-associative-array-as-argument-to-a-function-in-bash
-  eval "declare -A resolvedServices="${3#*=}
-
-  [ ${resolvedServices[$serviceName]+_} ] && return 1
-  for dependency in $(yq_service $serviceName '."run-after"?[]?'); do
-    [ ${resolvedServices[$dependency]+_} ] || return 1
-  done
-
-  echo "$i: Run $serviceName"
-  execute_service_in_tmux $i $serviceName 2>&1 | tee -a "$(log_file_for $serviceName)"
 }
 
 print_service_graph() {
@@ -135,33 +117,11 @@ run_services_in_tmux() {
   echo "  Enabled services: ${enabledServiceNames[@]}"
   print_service_graph
 
-  declare -A resolvedServices=()
+  # init status manager
+  /status-manager.sh init
+  # Fire services in tab
   for i in $(seq ${#enabledServiceNames[@]}); do
-    # Try to execute a service
-    success=false
-    for serviceName in ${enabledServiceNames[@]}; do
-      try_to_execute $i "$serviceName" "$(declare -p resolvedServices)" && {
-        success=true
-        resolvedServices[$serviceName]=true
-        break;
-      }
-    done
-    if [[ $success != true ]]; then
-      echo 'Cannot execute all the services:'
-      echo '  The config might contains circular dependency or enabled services depends on disabled ones.'
-      echo 'Enabled services:'
-      for serviceName in $(list_service_names); do
-        echo -n "  $serviceName: "
-        if [ ${resolvedServices[$serviceName]+_} ]; then
-          echo 'DONE'
-        elif [ ${resolvedServices[$serviceName]+_} ]; then
-          echo
-        else
-          echo 'DISABLED'
-        fi
-      done
-      exit 1
-    fi
+    fire_service_in_tmux_tab $i "$serviceName" 2>&1 | tee -a "$(log_file_for $serviceName)"
   done
 }
 
@@ -214,9 +174,10 @@ start_control_tmux() {
   tmux send-keys -t $TMUX_SESSION:1.1 enter
 }
 
-wait_until_tmux_quit() {
-  # https://stackoverflow.com/questions/1058047/wait-for-any-process-to-finish
-  tail --pid=$(tmux list-sessions -F '#{pid}') -f /dev/null
+wait_for_all_enabled_services() {
+  # Wait for all services to end.
+  # Also means keep going if there are any deamon services.
+  /status-manager.sh wait ${enabledServiceNames[@]}
 }
 
 verify_config() {
@@ -276,7 +237,7 @@ cmd_daemon() {
     echo
     start_control_tmux
     run_services_in_tmux
-    wait_until_tmux_quit
+    wait_for_all_enabled_services
   } >> $(log_file_for_self)
 }
 

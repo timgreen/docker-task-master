@@ -36,7 +36,8 @@ RUN if [[ $graph_easy == true ]]; then \
     fi
 
 ADD entry-point.sh /entry-point.sh
-RUN chmod a+rx /entry-point.sh \
+ADD status-manager.sh /status-manager.sh
+RUN chmod a+rx /entry-point.sh /status-manager.sh \
     && ln -s /entry-point.sh /usr/bin/s
 
 ADD .terminfo/ /root/.terminfo
