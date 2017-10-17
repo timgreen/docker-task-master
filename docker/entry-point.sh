@@ -121,6 +121,7 @@ run_services_in_tmux() {
   /status-manager.sh init
   # Fire services in tab
   for i in $(seq ${#enabledServiceNames[@]}); do
+    serviceName=${enabledServiceNames[$((i - 1))]}
     fire_service_in_tmux_tab $i "$serviceName" 2>&1 | tee -a "$(log_file_for $serviceName)"
   done
 }
