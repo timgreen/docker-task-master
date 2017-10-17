@@ -3,7 +3,7 @@
 STATUS_FILE=${WORKDIR:-/dev/shm}/resolved_services.txt
 
 cmd_init() {
-  echo > "$STATUS_FILE"
+  echo -n > "$STATUS_FILE"
 }
 
 cmd_resolve() {
@@ -13,6 +13,7 @@ cmd_resolve() {
 
 cmd_wait() {
   [[ "$1" == "" ]] && return
+  [ -r "$STATUS_FILE" ] || exit 1
 
   PID="$$"
   {
