@@ -47,7 +47,6 @@ fire_service_in_tmux_tab() {
 
   # read config
   repo="$(yq_service $serviceName .repo)"
-  entryPoint="$(yq_service $serviceName .\"entry-point\")"
 
   # clone repo
   if [[ "$repo" != "null" ]]; then
@@ -59,12 +58,8 @@ fire_service_in_tmux_tab() {
   # run entry point in tmux
   targetWindow="$TMUX_SESSION:$((i+1))"
   tmux new-window -t $targetWindow -n "$serviceName" -c "$WORKDIR/$serviceName"
-  # Wait service dependencies.
-  tmux send-keys -t $targetWindow -l "/status-manager.sh wait $(yq_service $serviceName '."run-after"?[]?'); "
-  # Run entry point code.
-  tmux send-keys -t $targetWindow -l "$entryPoint "
-  # Notify other service if this task completed without error.
-  tmux send-keys -t $targetWindow -l "&& /status-manager.sh resolve $serviceName "
+  # Run service with 'run' sub command.
+  tmux send-keys -t $targetWindow -l "s run $serviceName"
   tmux pipe-pane -t $targetWindow "cat >> '$(log_file_for $serviceName)'"
   tmux send-keys -t $targetWindow enter
 }
@@ -272,6 +267,24 @@ cmd_list() {
   done
 }
 
+cmd_run() {
+  serviceName=$1
+  echo "Run $serviceName"
+
+  echo -n "Wait service dependencies ... "
+  /status-manager.sh wait $(yq_service $serviceName '."run-after"?[]?')
+  echo "All Resolved."
+
+  echo "Run entry point code ... "
+  eval "$(yq_service $serviceName .\"entry-point\")" || {
+  echo "$(tput setaf 1)Service $serviceName exit with error.$(tput sgr0)"
+    exit 1
+  }
+
+  echo "Notify other service this task completed without error."
+  /status-manager.sh resolve $serviceName
+}
+
 cmd_help() {
   cmd=$1
   if [[ "$cmd" != "" ]]; then
@@ -283,12 +296,14 @@ cmd_help() {
 Usage: s [cmd]
 
 Available commands:
-  daemon  start the daemon.
   tmux    attach to the control tmux.
   list    list services.
   graph   show services graph.
   bash    run bash.
   help    show this help message.
+Internal commands, not mean to be used by user:
+  daemon  start the daemon.
+  run     run a service.
 EOF
 }
 
@@ -307,6 +322,9 @@ main() {
       ;;
     list)
       cmd_list
+      ;;
+    run)
+      cmd_run "$2"
       ;;
     bash)
       bash
