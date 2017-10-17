@@ -1,11 +1,13 @@
-version: '3'
+version: '3.2'
 services:
   task-master:
     image: timgreen/task-master
     hostname: task-master-hello-world
+    environment:
+      WORKDIR: &WORKDIR /dev/shm/.task-master-hello-world
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config.hello-world.yaml:/config.yaml:ro
-      - /dev/shm/.task-master-hello-world:/dev/shm/.task-master-hello-world
-    environment:
-      - WORKDIR=/dev/shm/.task-master-hello-world
+      - type: bind
+        source: *WORKDIR
+        target: *WORKDIR
