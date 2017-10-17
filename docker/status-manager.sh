@@ -28,8 +28,10 @@ cmd_wait() {
       }
     done
     if [[ "$allGood" == "true" ]]; then
-      # tell inotifywait to quit
-      kill -9 $(pgrep -P $(pgrep -P $PID | paste -sd "," -) -x inotifywait)
+      # tell inotifywait in the sub process to quit
+      pgrep -P $PID | while read subPid; do
+        pgrep -P $subPid -x inotifywait
+      done | xargs kill -9
       exit
     fi
   done
