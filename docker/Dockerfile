@@ -13,6 +13,7 @@ RUN apk add --no-cache \
     tmux \
     ncurses \
     inotify-tools \
+    procps \
   && pip install yq
 
 # papertrail
