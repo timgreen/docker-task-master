@@ -269,6 +269,11 @@ cmd_list() {
 
 cmd_run() {
   serviceName=$1
+  is_service_enabled $serviceName || {
+    echo "Cannot run non enabled service '$serviceName'."
+    exit 1
+  }
+
   echo "Run $serviceName"
 
   echo -n "Wait service dependencies ... "
