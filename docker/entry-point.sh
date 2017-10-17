@@ -338,9 +338,9 @@ main() {
       cmd_help
       ;;
     *)
-      cmd_help "$*"
+      cmd_help "$@"
       exit 1
   esac
 }
 
-main "$*"
+main "$@"
