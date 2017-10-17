@@ -12,6 +12,8 @@ cmd_resolve() {
 }
 
 cmd_wait() {
+  [[ "$1" == "" ]] && return
+
   PID="$$"
   {
     echo 'tick initial check'
