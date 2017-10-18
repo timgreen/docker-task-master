@@ -5,7 +5,7 @@ services:
     # Only required if papertrail is enabled, used as system name.
     hostname: task-master-hello-world
     environment:
-      # Required
+      # Optional
       WORKDIR: &WORKDIR /dev/shm/.task-master-hello-world
     volumes:
       # Required, bind the config.

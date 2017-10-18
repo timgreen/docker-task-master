@@ -56,5 +56,7 @@ RUN chmod a+rx /entry-point.sh /status-manager.sh \
 ADD .terminfo/ /root/.terminfo
 ADD .tmux.conf /root/.tmux.conf
 
+ENV WORKDIR /dev/shm/
+
 ENTRYPOINT ["/entry-point.sh"]
 CMD ["daemon"]
