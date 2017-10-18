@@ -2,12 +2,16 @@ version: '3.2'
 services:
   task-master:
     image: timgreen/task-master
+    # Only required if papertrail is enabled, used as system name.
     hostname: task-master-hello-world
     environment:
+      # Required
       WORKDIR: &WORKDIR /dev/shm/.task-master-hello-world
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      # Required, bind the config.
       - ./config.hello-world.yaml:/config.yaml:ro
+      # Following volumes are required if any service depends docker (dind).
+      - /var/run/docker.sock:/var/run/docker.sock
       - type: bind
         source: *WORKDIR
         target: *WORKDIR
