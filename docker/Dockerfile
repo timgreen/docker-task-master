@@ -44,6 +44,7 @@ RUN if [[ $graph_easy == true ]]; then \
       apk add --no-cache perl perl-utils make \
       && cpan Graph::Easy \
       && rm -fr ~/.cpan/ \
+      && apk del perl-utils make \
       ; \
     fi
 
