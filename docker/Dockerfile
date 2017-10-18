@@ -1,4 +1,4 @@
-ARG BASE=docker:17.09.0-ce
+ARG BASE=docker
 
 FROM ${BASE}
 MAINTAINER Tim Green "iamtimgreen@gmail.com"
