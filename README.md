@@ -7,11 +7,11 @@
 
 | Tag     | Dind               | Graph Easy         | Papertrail         | Layers      |
 | ------- | ------------------ | ------------------ | ------------------ | ----------- |
-| latest  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master.svg)](https://hub.docker.com/r/timgreen/task-master/) |
-| minimum |                    |                    |                    | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:minimum.svg)](https://hub.docker.com/r/timgreen/task-master/) |
-| d       | :heavy_check_mark: |                    |                    | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:d.svg)](https://hub.docker.com/r/timgreen/task-master/) |
-| g       |                    | :heavy_check_mark: |                    | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:g.svg)](https://hub.docker.com/r/timgreen/task-master/) |
-| p       |                    |                    | :heavy_check_mark: | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:p.svg)](https://hub.docker.com/r/timgreen/task-master/) |
-| dg      | :heavy_check_mark: | :heavy_check_mark: |                    | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:dg.svg)](https://hub.docker.com/r/timgreen/task-master/) |
-| dp      | :heavy_check_mark: |                    | :heavy_check_mark: | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:dp.svg)](https://hub.docker.com/r/timgreen/task-master/) |
-| gp      |                    | :heavy_check_mark: | :heavy_check_mark: | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:gp.svg)](https://hub.docker.com/r/timgreen/task-master/) |
+| latest  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master.svg)](https://microbadger.com/images/timgreen/task-master) |
+| minimum |                    |                    |                    | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:minimum.svg)](https://microbadger.com/images/timgreen/task-master) |
+| d       | :heavy_check_mark: |                    |                    | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:d.svg)](https://microbadger.com/images/timgreen/task-master) |
+| g       |                    | :heavy_check_mark: |                    | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:g.svg)](https://microbadger.com/images/timgreen/task-master) |
+| p       |                    |                    | :heavy_check_mark: | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:p.svg)](https://microbadger.com/images/timgreen/task-master) |
+| dg      | :heavy_check_mark: | :heavy_check_mark: |                    | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:dg.svg)](https://microbadger.com/images/timgreen/task-master) |
+| dp      | :heavy_check_mark: |                    | :heavy_check_mark: | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:dp.svg)](https://microbadger.com/images/timgreen/task-master) |
+| gp      |                    | :heavy_check_mark: | :heavy_check_mark: | [![ImageLayers](https://images.microbadger.com/badges/image/timgreen/task-master:gp.svg)](https://microbadger.com/images/timgreen/task-master) |
