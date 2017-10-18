@@ -1,16 +1,24 @@
 #!/bin/bash
 
-papertrail=true
 graph_easy=true
+papertrail=true
 
 case $CACHE_TAG in
   latest)
-    papertrail=true
     graph_easy=true
+    papertrail=true
+    ;;
+  grapheasy)
+    graph_easy=true
+    papertrail=false
+    ;;
+  papertrail)
+    graph_easy=false
+    papertrail=true
     ;;
   minimum)
-    papertrail=false
     graph_easy=false
+    papertrail=false
     ;;
 esac
 
