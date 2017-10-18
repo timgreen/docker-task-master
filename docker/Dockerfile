@@ -1,4 +1,6 @@
-FROM docker:17.09.0-ce
+ARG BASE=docker:17.09.0-ce
+
+FROM ${BASE}
 MAINTAINER Tim Green "iamtimgreen@gmail.com"
 
 RUN apk add --no-cache \
