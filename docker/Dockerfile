@@ -24,7 +24,8 @@ RUN apk add --no-cache \
     ncurses \
     inotify-tools \
     procps \
-  && pip install yq
+  && pip install yq \
+  && rm -fr ~/.cache/
 
 # papertrail
 ARG papertrail=true
@@ -42,6 +43,7 @@ ARG graph_easy=true
 RUN if [[ $graph_easy == true ]]; then \
       apk add --no-cache perl perl-utils make \
       && cpan Graph::Easy \
+      && rm -fr ~/.cpan/ \
       ; \
     fi
 
