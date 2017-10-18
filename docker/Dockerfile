@@ -42,7 +42,7 @@ RUN if [[ $papertrail == true ]]; then \
 ARG graph_easy=true
 RUN if [[ $graph_easy == true ]]; then \
       apk add --no-cache perl perl-utils make \
-      && cpan Graph::Easy \
+      && cpan -f Graph::Easy \
       && rm -fr ~/.cpan/ \
       && apk del perl-utils make \
       ; \
