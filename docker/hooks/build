@@ -1,0 +1,22 @@
+#!/bin/bash
+
+papertrail=true
+graph_easy=true
+
+case $CACHE_TAG in
+  latest)
+    papertrail=true
+    graph_easy=true
+    ;;
+  minimum)
+    papertrail=false
+    graph_easy=false
+    ;;
+esac
+
+docker build \
+  --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+  --build-arg VCS_REF=`git rev-parse --short HEAD` \
+  --build-arg papertrail="$papertrail" \
+  --build-arg graph_easy="$graph_easy" \
+  -t $IMAGE_NAME .
