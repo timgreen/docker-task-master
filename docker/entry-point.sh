@@ -45,16 +45,6 @@ fire_service_in_tmux_tab() {
 
   echo "Execute service in tmux: $serviceName"
 
-  # read config
-  repo="$(yq_service $serviceName .repo)"
-
-  # clone repo
-  if [[ "$repo" != "null" ]]; then
-    [ -d "$WORKDIR/$serviceName" ] || git clone --depth 1 "$repo" "$WORKDIR/$serviceName"
-  else
-    mkdir -p "$WORKDIR/$serviceName"
-  fi
-
   # run entry point in tmux
   targetWindow="$TMUX_SESSION:$((i+1))"
   tmux new-window -t $targetWindow -n "$serviceName" -c "$WORKDIR/$serviceName"
@@ -280,7 +270,16 @@ cmd_run() {
   /status-manager.sh wait $(yq_service $serviceName '."run-after"?[]?')
   echo "All Resolved."
 
+  echo "Clone repo ... "
+  repo="$(yq_service $serviceName .repo)"
+  if [[ "$repo" != "null" ]]; then
+    [ -d "$WORKDIR/$serviceName" ] || git clone --depth 1 "$repo" "$WORKDIR/$serviceName"
+  else
+    mkdir -p "$WORKDIR/$serviceName"
+  fi
+
   echo "Run entry point code ... "
+  cd "$WORKDIR/$serviceName"
   eval "$(yq_service $serviceName .\"entry-point\")" || {
   echo "$(tput setaf 1)Service $serviceName exit with error.$(tput sgr0)"
     exit 1
