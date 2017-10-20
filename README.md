@@ -1,5 +1,6 @@
 # Task Master
 
+[![Build Status](https://travis-ci.org/timgreen/docker-task-master.svg?branch=master)](https://travis-ci.org/timgreen/docker-task-master)
 [![Docker Build Statu](https://img.shields.io/docker/build/timgreen/task-master.svg)](https://hub.docker.com/r/timgreen/task-master/)
 [![Docker Automated build](https://img.shields.io/docker/automated/timgreen/task-master.svg)](https://hub.docker.com/r/timgreen/task-master/)
 [![Docker Stars](https://img.shields.io/docker/stars/timgreen/task-master.svg)](https://hub.docker.com/r/timgreen/task-master/)
