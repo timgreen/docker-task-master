@@ -9,4 +9,4 @@ before_install:
   - docker pull docker
 
 script:
-  - test/test.sh
+  - tests/run_tests.sh
