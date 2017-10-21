@@ -55,3 +55,15 @@ teardown() {
   [ "$status" -eq 0 ]
   docker_test_end
 }
+
+@test "wait quit immediately for already resolved services" {
+  docker_test_begin
+  docker_test_exec '/status-manager.sh init'
+  run docker_test_exec 'test -r /dev/shm/file'
+  [ "$status" -eq 1 ]
+  docker_test_exec '/status-manager.sh resolve A'
+  docker_test_exec_d '/status-manager.sh wait A; touch /dev/shm/file'
+  run docker_test_exec 'test -r /dev/shm/file'
+  [ "$status" -eq 0 ]
+  docker_test_end
+}
