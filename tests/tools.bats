@@ -11,3 +11,9 @@ load test_helper
   run docker_run_bash 'yq -h'
   [ "$status" -eq 0 ]
 }
+
+@test "docker-compose installation" {
+  docker_run_bash 'docker-compose -h'
+  run docker_run_bash 'docker-compose -h'
+  [ "$status" -eq 0 ]
+}

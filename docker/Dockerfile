@@ -25,6 +25,7 @@ RUN apk add --no-cache \
     inotify-tools \
     procps \
   && pip install yq \
+  && pip install docker-compose \
   && rm -fr ~/.cache/
 
 # papertrail
@@ -47,9 +48,6 @@ RUN if [[ $graph_easy == true ]]; then \
       && apk del perl-utils make \
       ; \
     fi
-
-RUN curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose \
-    && chmod +x /usr/local/bin/docker-compose
 
 ADD entry-point.sh /entry-point.sh
 ADD status-manager.sh /status-manager.sh
