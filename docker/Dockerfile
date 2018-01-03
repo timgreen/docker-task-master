@@ -48,6 +48,9 @@ RUN if [[ $graph_easy == true ]]; then \
       ; \
     fi
 
+RUN curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose \
+    && chmod +x /usr/local/bin/docker-compose
+
 ADD entry-point.sh /entry-point.sh
 ADD status-manager.sh /status-manager.sh
 RUN chmod a+rx /entry-point.sh /status-manager.sh \
